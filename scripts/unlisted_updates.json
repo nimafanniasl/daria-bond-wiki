@@ -1,24 +1,15 @@
 {
   "unlisted_updates": [
     {
-      "id": null,
-      "response": [
-        {
-          "incremental": "V5.29.2.2.BOND",
-          "api_level": "34",
-          "url": "https://api.dariaos.com/ota/download/DariaOS-5.0-20250720-RELEASE-zahedan-V5.29.2.2.BOND-user-signed.zip",
-          "datetime": 1753008492,
-          "md5sum": "2db0da52a9885252840181594fbf2e91",
-          "changes": "PHAgc3R5bGU9InRleHQtYWxpZ246bGVmdCI+PHNwYW4gc3R5bGU9ImZvbnQtZmFtaWx5OlZlcmRhbmEsR2VuZXZhLHNhbnMtc2VyaWYiPjxzdHJvbmc+VjUuMjkuMi4yLkJPTkQgLSBKdWx5IDIwPHN1cD50aDwvc3VwPiwgMjAyNSAtIERhcmlhT1MgNS4wIChBbmRyb2lkIDE0KTwvc3Ryb25nPjwvc3Bhbj48L3A+DQoNCjx1bD4NCgk8bGk+PHNwYW4gc3R5bGU9ImZvbnQtZmFtaWx5OlZlcmRhbmEsR2VuZXZhLHNhbnMtc2VyaWYiPvCfm6DvuI8gSW50ZXJtZWRpYXJ5IFVwZGF0ZTwvc3Bhbj4NCgkJPHVsPg0KCQkJPGxpPjxzcGFuIHN0eWxlPSJmb250LWZhbWlseTpWZXJkYW5hLEdlbmV2YSxzYW5zLXNlcmlmIj48Yj5JTVBPUlRBTlQ6PC9iPiBUaGlzIHVwZGF0ZSBwcmVwYXJlcyB5b3VyIGRldmljZSB0byBtaWdyYXRlIGZyb20gRGFyaWFPUyA1LjAgdG8gRGFyaWFPUyA2LjAuPGJyPkFmdGVyIGluc3RhbGxpbmcgdGhpcyB1cGRhdGUgYW5kIHJlYm9vdGluZywgeW91ciBwaG9uZSB3aWxsIGF1dG9tYXRpY2FsbHkgc3RhcnQgZG93bmxvYWRpbmcgRGFyaWFPUyA2LjAuPC9zcGFuPjwvbGk+DQoJCTwvdWw+DQoJPC9saT4NCjwvdWw+",
-          "filename": "DariaOS-5.0-20250720-RELEASE-zahedan-V5.29.2.2.BOND-user-signed.zip",
-          "romtype": "release",
-          "version": "5.0",
-          "size": 2437976521,
-          "id": "fa4b694106f7bf58a4067bdc8492fc70",
-          "updatetype": "full",
-          "mandatory": true
-        }
-      ]
+        "version": "DariaOS 5.0 (No Automatic Update to OS 6)",
+        "api_level": "34",
+        "url": "https://pixeldrain.com/u/7kPCoBL5",
+        "md5sum": "b42906973eb4fb5e4e2169b2f44a2d89",
+        "description": "<h3>داریا اواس ۵، بدون آپدیت خودکار به داریا اواس ۶ بعد از نصب</h3>\n<h3>برای برگشت به داریا اواس از رام های غیر رسمی بر پایه داریا اواس ۵ (کرنل ۴.۱۹) از این رام استفاده کنید.</h3>",
+        "filename": "DariaOS-5.0-20241205-RELEASE-zahedan-user-signed.zip",
+        "romtype": "release",
+        "size": 2461564748,
+        "updatetype": "full"
     }
   ]
 }
