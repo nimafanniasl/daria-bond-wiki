@@ -4,6 +4,8 @@
         "version": "DariaOS 5.0 (No Automatic Update to OS 6)",
         "api_level": "34",
         "url": "https://pixeldrain.com/u/7kPCoBL5",
+        "boot_img": "https://pixeldrain.com/u/kD1ixFhV",
+        "expanded": true,
         "md5sum": "b42906973eb4fb5e4e2169b2f44a2d89",
         "description": "<h3>داریا اواس ۵، بدون آپدیت خودکار به داریا اواس ۶ بعد از نصب</h3>\n<h3>برای برگشت به داریا اواس از رام های غیر رسمی بر پایه داریا اواس ۵ (کرنل ۴.۱۹) از این رام استفاده کنید.</h3>",
         "filename": "DariaOS-5.0-20241205-RELEASE-zahedan-user-signed.zip",
