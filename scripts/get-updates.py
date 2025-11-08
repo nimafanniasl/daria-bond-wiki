@@ -1,84 +1,108 @@
 import requests
 import base64
-from bs4 import BeautifulSoup
 import json
+from bs4 import BeautifulSoup
 
 all_server_updates = []
 
 def get_updates(codename: str, release_code: str):
-    base_response = requests.get(
-        f"https://api.dariaos.com/ota/api/v1/{codename}/RELEASE/{release_code}/SOMETHING").json()
-    
-    if len(base_response["response"]) == 0:
+    """Recursively fetch OTA updates from the server for a given codename and release code."""
+    url = f"https://api.dariaos.com/ota/api/v1/{codename}/RELEASE/{release_code}/SOMETHING"
+    base_response = requests.get(url).json()
+
+    if not base_response.get("response"):
         return
 
     response = base_response["response"][0]
-    print(f"found {response['incremental']}")
+    print(f"[{codename}] Found incremental: {response['incremental']}")
 
-    response["changes"] = base64.b64decode(response["changes"])
-        
+    # Decode changelog from base64
+    response["changes"] = base64.b64decode(response["changes"]).decode("utf-8")
+    response["device"] = codename
+
     all_server_updates.append(response)
 
+    # Recursively get previous updates
     get_updates(codename, response["incremental"])
 
-# Get DariaOS 4 -> 5 Updates
-os4_updates = get_updates("zahedan", "V4.81.1.0.BOND")
 
-server_updates_html = []
-unlisted_updates_html = []
-
-for update in all_server_updates:
-    size_gb = update["size"] / (1024 ** 3)
-    server_updates_html.append(f"""
-                        <details>
-                        <summary>DariaOS {update["version"]} - {update["incremental"]}</summary>
-
-                        <h3>Download: <a href="{update["url"]}">{update["filename"]}</a></h3>
-                        
-                        <p>File Size: {size_gb:.2f} GB - md5sum: {update["md5sum"]} - API Level {update["api_level"]} - Channel: {update["channel"]} - Type: {update["updatetype"]}</p>
-
-                        <h3>Changelog:</h3>
-                        {update["changes"].decode("utf-8")}
-                        </details>
-                        """)
-
-with open("scripts/unlisted_updates.json", "r") as f:
-    unlisted_updates_info = json.load(f)["unlisted_updates"]
-    for update in unlisted_updates_info:
+def build_server_updates_html(updates):
+    """Generate HTML for server-hosted OTA updates."""
+    html_blocks = []
+    for update in updates:
         size_gb = update["size"] / (1024 ** 3)
-        unlisted_updates_html.append(f"""
-                            <details {"open" if update.get("expanded", False) else ""}>
-                            <summary>{update["version"]}</summary>
+        html_blocks.append(f"""
+        <details>
+            <summary>DariaOS {update["version"]} - {update["incremental"]}</summary>
+            <h3>Download: <a href="{update["url"]}">{update["filename"]}</a></h3>
+            <p>
+                File Size: {size_gb:.2f} GB — md5sum: {update["md5sum"]} —
+                API Level: {update["api_level"]} — Channel: {update["channel"]} — Type: {update["updatetype"]}
+            </p>
+            <h3>Changelog:</h3>
+            {update["changes"]}
+        </details>
+        """)
+    return "\n".join(html_blocks)
 
-                            <h2>توضیحات:</h2>
-                            {update["description"]}
 
-                            <h3>Download: <a href="{update["url"]}">{update["filename"]}</a></h3>
-                            {f"<h3>Download Boot + Recovery Image: <a href=\"{update["boot_img"]}\">boot.img</a></h3>" if update.get("boot_img", False) else ""}
+def build_unlisted_updates_html(unlisted_updates, codename):
+    """Generate HTML for unlisted (manual) OTA updates filtered by codename."""
+    html_blocks = []
+    for update in unlisted_updates:
+        if update.get("device") != codename:
+            continue
+        size_gb = update["size"] / (1024 ** 3)
+        html_blocks.append(f"""
+        <details {"open" if update.get("expanded", False) else ""}>
+            <summary>{update["version"]}</summary>
+            <h2>توضیحات:</h2>
+            {update["description"]}
+            <h3>Download: <a href="{update["url"]}">{update["filename"]}</a></h3>
+            {f'<h3>Download Boot + Recovery Image: <a href="{update["boot_img"]}">boot.img</a></h3>' if update.get("boot_img") else ""}
+            <p>
+                File Size: {size_gb:.2f} GB — md5sum: {update["md5sum"]} —
+                API Level: {update["api_level"]} — Type: {update.get("updatetype", "N/A")}
+            </p>
+        </details>
+        """)
+    return "\n".join(html_blocks)
 
-                            <p>File Size: {size_gb:.2f} GB - md5sum: {update["md5sum"]} - API Level {update["api_level"]} - Type: {update.get("updatetype", "N/A")}</p>
-                            </details>
-                            """)
-    
 
-final_html = """
-# بارگیری رام رسمی
-"""
+def main():
+    devices = {
+        "zahedan": {"name": "Daria Bond I", "release": "V0.00.0.0.BOND"},
+        "hormoz": {"name": "Daria Bond II", "release": "V0.00.0.0.BOND2"},
+        "qoqnoos": {"name": "Daria Bond II Lite", "release": "V0.00.0.0.BOND2L"}
+    }
 
-final_html += "# رام های رسمی (حذف شده از سرور داریا)"
+    with open("scripts/unlisted_updates.json", "r") as f:
+        unlisted_updates = json.load(f).get("unlisted_updates", [])
 
-unlisted_updates_html = "\n".join(unlisted_updates_html)
+    final_html = "# بارگیری رام رسمی\n\n"
 
-final_html += unlisted_updates_html
+    for codename, info in devices.items():
+        print(f"\n=== Fetching updates for {info['name']} ({codename}) ===")
+        get_updates(codename, info["release"])
 
-final_html += "# رام های رسمی (سرور داریا)"
+        device_updates = [u for u in all_server_updates if u["device"] == codename]
+        server_updates_html = build_server_updates_html(device_updates)
+        unlisted_updates_html = build_unlisted_updates_html(unlisted_updates, codename)
 
-server_updates_html = "\n".join(server_updates_html)
+        final_html += f"\n## {info['name']} ({codename})\n"
+        if unlisted_updates_html:
+            final_html += "\n### رام‌های رسمی (حذف شده از سرور داریا)\n"
+            final_html += unlisted_updates_html
+        final_html += "\n\n### رام‌های رسمی (سرور داریا)\n"
+        final_html += server_updates_html or "_هیچ رام رسمی در سرور یافت نشد._"
 
-final_html += server_updates_html
+    # Beautify with BeautifulSoup
+    final_html = BeautifulSoup(final_html, "html.parser").prettify()
 
-soup = BeautifulSoup(final_html, "html.parser")
-final_html = soup.prettify()
+    with open("docs/official-rom.md", "w", encoding="utf-8") as f:
+        f.write(final_html)
+    print("\nDone! Output saved to docs/official-rom.md")
 
-with open("docs/official-rom.md", "w") as f:
-    f.write(final_html)
+
+if __name__ == "__main__":
+    main()

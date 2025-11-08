@@ -1,6 +1,7 @@
 {
   "unlisted_updates": [
     {
+        "device": "zahedan",
         "version": "DariaOS 5.0 (No Automatic Update to OS 6)",
         "api_level": "34",
         "url": "https://pixeldrain.com/u/7kPCoBL5",
