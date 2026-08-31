@@ -1,0 +1,10 @@
+html {
+    scroll-behavior: smooth;
+}
+body {
+    font-family: Vazirmatn, sans-serif;
+}
+* {
+    unicode-bidi: plaintext;
+    text-align: start;
+}
